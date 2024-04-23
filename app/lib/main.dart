@@ -8,7 +8,7 @@ void main() async {
   if (!await isPodmanInstalled()) {
     runApp(const PodmanNotInstalled()); //opens the "podman not found" window
   } else {
-    await initFolder();
+    await initFolder(); //Initializes the folder and it's content if it doesn't exist allready.
 
     runApp(App());
   }
