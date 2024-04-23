@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
 
 import 'package:Serve/functions/podman.dart'; //Contains all function related to podman
+import 'package:Serve/functions/folderManager.dart'; //Contains all function related to managing the Serve folder
 
 List modules = []; //The data of the modules
 void main() async {
   if (!await isPodmanInstalled()) {
     runApp(const PodmanNotInstalled()); //opens the "podman not found" window
   } else {
+    await initFolder();
+
     runApp(App());
   }
 }
 
+/**
+ * The widget the gets placed in the main scene when no podman is installed.
+ */
 class PodmanNotInstalled extends StatelessWidget {
   const PodmanNotInstalled({super.key});
 
@@ -30,6 +36,9 @@ class PodmanNotInstalled extends StatelessWidget {
   }
 }
 
+/**
+ * The main app widget that contains all the module widgets.
+ */
 class App extends StatefulWidget {
   const App({super.key});
 
