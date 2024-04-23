@@ -19,8 +19,7 @@ Future<void> initNetwork() async {
   bool exists = await checkPodmanNetworkExists();
 
   if (!exists) {
-    final process =
-        await Process.start('podman', ['network', 'create', 'serve']);
+    await Process.start('podman', ['network', 'create', 'serve']);
   } else {
     print("network allready exists");
   }
