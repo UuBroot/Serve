@@ -9,6 +9,7 @@ void main() async {
     runApp(const PodmanNotInstalled()); //opens the "podman not found" window
   } else {
     await initFolder(); //Initializes the folder and it's content if it doesn't exist allready.
+    await (initNetwork()); //Checks if the podman network exists and created it if it doesn't.
 
     runApp(App());
   }
