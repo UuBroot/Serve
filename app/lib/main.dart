@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:Serve/functions/podman.dart'; //Contains all function related to podman
 import 'package:Serve/functions/folderManager.dart'; //Contains all function related to managing the Serve folder
 
+import 'package:Serve/widgets/moduleWidget.dart';
+
 List modules = []; //The data of the modules
 void main() async {
   if (!await isPodmanInstalled()) {
@@ -10,8 +12,6 @@ void main() async {
   } else {
     await initFolder(); //Initializes the folder and it's content if it doesn't exist allready.
     await (initNetwork()); //Checks if the podman network exists and created it if it doesn't.
-
-    modules = await readJsonFilesFromFolder(); //loades the modules
 
     runApp(App());
   }
@@ -53,34 +53,41 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      themeMode: ThemeMode.system, // Use the device's theme mode
-      darkTheme: ThemeData.dark(), // Dark theme
-      theme: ThemeData.light(), // Light theme
-      home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Serve - Server Manager'),
-            actions: [
-              ButtonBar(
-                children: [
-                  ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          modules.add(Text("Test"));
-                        });
+        themeMode: ThemeMode.system, // Use the device's theme mode
+        darkTheme: ThemeData.dark(), // Dark theme
+        theme: ThemeData.light(), // Light theme
+        home: Scaffold(
+            appBar: AppBar(
+              title: const Text('Serve - Server Manager'),
+              actions: [
+                ButtonBar(
+                  children: [
+                    ElevatedButton(
+                        onPressed: () async {
+                          await initFolder();
+                        },
+                        child: const Text("Update Modules"))
+                  ],
+                )
+              ],
+            ),
+            body: StreamBuilder(
+                stream: readJsonFilesStream(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<dynamic>> snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, i) {
+                        var data = snapshot
+                            .data![i]; // Each item is a Map<String, dynamic>
+                        print(data);
+                        return ModuleWidget();
                       },
-                      child: const Text("Reload")),
-                ],
-              )
-            ],
-          ),
-          body: ListView.builder(
-            itemCount: modules.length,
-            itemBuilder: (context, i) {
-              return Card(
-                child: Text(i.toString()),
-              );
-            },
-          )),
-    );
+                    );
+                  } else {
+                    return Text("No modules");
+                  }
+                })));
   }
 }

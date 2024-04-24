@@ -64,25 +64,27 @@ void downloadJsonFiles(path) async {
 /**
  * Reads the json files from the modules folder.
  */
-Future<List<dynamic>> readJsonFilesFromFolder() async {
-  try {
-    final directory = Directory('${getHomeDirectoryPath()}/Serve/modules');
-    final files = directory.listSync();
-    final jsonFiles = files.where((file) => file.path.endsWith('.json'));
-    final jsonDataList = <dynamic>[];
 
-    for (var file in jsonFiles) {
-      try {
-        final fileContent = await File(file.path).readAsString();
-        final jsonData = jsonDecode(fileContent);
-        jsonDataList.add(jsonData);
-      } catch (e) {
-        print("some module could not be loaded");
+Stream<List<Map<String, dynamic>>> readJsonFilesStream() async* {
+  await for (var _ in Stream.periodic(Duration(seconds: 1))) {
+    final folder = Directory('${getHomeDirectoryPath()}/Serve/modules');
+
+    if (await folder.exists()) {
+      final files = folder.listSync();
+      final List<Map<String, dynamic>> jsonList = [];
+
+      for (var file in files) {
+        if (file is File && file.path.endsWith('.json')) {
+          final String data = await file.readAsString();
+          final Map<String, dynamic> jsonData = json.decode(data);
+          jsonList.add(jsonData);
+        }
       }
+      print(jsonList);
+
+      yield jsonList;
+    } else {
+      print('Folder does not exist');
     }
-    return jsonDataList;
-  } catch (e) {
-    print("Error:" + e.toString());
-    return List.empty();
   }
 }
