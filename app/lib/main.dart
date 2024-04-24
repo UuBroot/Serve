@@ -11,6 +11,8 @@ void main() async {
     await initFolder(); //Initializes the folder and it's content if it doesn't exist allready.
     await (initNetwork()); //Checks if the podman network exists and created it if it doesn't.
 
+    modules = await readJsonFilesFromFolder(); //loades the modules
+
     runApp(App());
   }
 }

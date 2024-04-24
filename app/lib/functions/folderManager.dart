@@ -60,3 +60,29 @@ void downloadJsonFiles(path) async {
 
   client.close();
 }
+
+/**
+ * Reads the json files from the modules folder.
+ */
+Future<List<dynamic>> readJsonFilesFromFolder() async {
+  try {
+    final directory = Directory('${getHomeDirectoryPath()}/Serve/modules');
+    final files = directory.listSync();
+    final jsonFiles = files.where((file) => file.path.endsWith('.json'));
+    final jsonDataList = <dynamic>[];
+
+    for (var file in jsonFiles) {
+      try {
+        final fileContent = await File(file.path).readAsString();
+        final jsonData = jsonDecode(fileContent);
+        jsonDataList.add(jsonData);
+      } catch (e) {
+        print("some module could not be loaded");
+      }
+    }
+    return jsonDataList;
+  } catch (e) {
+    print("Error:" + e.toString());
+    return List.empty();
+  }
+}
