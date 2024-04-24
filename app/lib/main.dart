@@ -81,8 +81,17 @@ class _AppState extends State<App> {
                       itemBuilder: (context, i) {
                         var data = snapshot
                             .data![i]; // Each item is a Map<String, dynamic>
-                        print(data);
-                        return ModuleWidget();
+
+                        return ModuleWidget(
+                            name: data['name'],
+                            image: data['image'],
+                            port: data['port'],
+                            usesPath: data['usesPath'],
+                            internalPath: data['internalPath'],
+                            externalPath: "", //volumePaths[i]
+                            xargs: data['xargs'],
+                            exec: data['exec'],
+                            changablePort: data['changablePort']);
                       },
                     );
                   } else {
