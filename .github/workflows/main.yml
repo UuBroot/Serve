@@ -17,6 +17,10 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           flutter-version: '3.19.6'
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build clang
       - name: Get dependencies
         run: flutter pub get
         working-directory: ./app
@@ -35,6 +39,10 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           flutter-version: '3.19.6'
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build clang
       - name: Get dependencies
         run: flutter pub get
         working-directory: ./app
@@ -53,6 +61,10 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           flutter-version: '3.19.6'
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build clang
       - name: Get dependencies
         run: flutter pub get
         working-directory: ./app
