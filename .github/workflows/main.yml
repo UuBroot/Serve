@@ -27,6 +27,11 @@ jobs:
       - name: Build Linux
         run: flutter build linux
         working-directory: ./app
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-build
+          path: ./app/build/linux/x64/release/bundle
 
  build-windows:
     runs-on: windows-latest
@@ -45,6 +50,11 @@ jobs:
       - name: Build Windows
         run: flutter build windows
         working-directory: ./app
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: windows-build
+          path: ./app/build/windows/runner/Release/
 
  build-mac:
     runs-on: macos-latest
@@ -63,3 +73,8 @@ jobs:
       - name: Build macOS
         run: flutter build macos
         working-directory: ./app
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: macos-build
+          path: ./app/build/macos/Build/Products/Release/
