@@ -17,8 +17,12 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           flutter-version: '2.x'
-      - run: flutter pub get
-      - run: flutter build linux
+      - name: Get dependencies
+        run: flutter pub get
+        working-directory: ./app
+      - name: Build Linux
+        run: flutter build linux
+        working-directory: ./app
 
  build-windows:
     runs-on: windows-latest
@@ -31,8 +35,12 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           flutter-version: '2.x'
-      - run: flutter pub get
-      - run: flutter build windows
+      - name: Get dependencies
+        run: flutter pub get
+        working-directory: ./app
+      - name: Build Windows
+        run: flutter build windows
+        working-directory: ./app
 
  build-mac:
     runs-on: macos-latest
@@ -45,5 +53,9 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           flutter-version: '2.x'
-      - run: flutter pub get
-      - run: flutter build macos
+      - name: Get dependencies
+        run: flutter pub get
+        working-directory: ./app
+      - name: Build macOS
+        run: flutter build macos
+        working-directory: ./app
