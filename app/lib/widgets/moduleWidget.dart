@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+
+import 'package:Serve/functions/folderManager.dart';
+
 class ModuleWidget extends StatefulWidget {
   //Initialises all the variables that are given by main.dart
   final String name;
@@ -41,6 +45,8 @@ class _ModuleWidgetState extends State<ModuleWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _portTextfieldController.text = widget.port.split(':')[0].toString();
+    //writePortToConfig("php", "234");
     bool inputDisabled = false;
     bool changablePort = !inputDisabled &&
         widget
@@ -59,6 +65,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
               children: <Widget>[
                 Row(
                   children: [
+                    //TITEL
                     Text(
                       widget.name,
                       style: const TextStyle(fontSize: 24),
@@ -68,16 +75,15 @@ class _ModuleWidgetState extends State<ModuleWidget> {
                       children: [
                         Row(
                           children: [
+                            //OPEN IN BROWSER BUTTON
                             OutlinedButton(
                                 style: OutlinedButton.styleFrom(
                                     shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      5.0), // Set the border radius here
+                                  borderRadius: BorderRadius.circular(5.0),
                                 )),
                                 onPressed: () {
-                                  print(
+                                  launchURL(
                                       "http://localhost:${_portTextfieldController.text}");
-                                  //launchURL("http://localhost:${_portTextfieldController.text}");
                                 },
                                 child: Text("Open in browser")),
                           ],
@@ -209,5 +215,19 @@ class _ModuleWidgetState extends State<ModuleWidget> {
         ),
       ),
     );
+  }
+}
+
+/**
+ * Launches the url in the browser
+ */
+Future<void> launchURL(String url) async {
+  //TODO:find alternative to depricated feature
+  // ignore: deprecated_member_use
+  if (await canLaunch(url)) {
+    // ignore: deprecated_member_use
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
   }
 }
