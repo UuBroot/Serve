@@ -89,6 +89,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
                           ],
                         ),
                         const SizedBox(width: 10),
+                        //RESET BUTTON
                         ElevatedButton(
                             onPressed: () {
                               //reset();
@@ -101,6 +102,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
                 const SizedBox(height: 10),
                 Row(
                   children: [
+                    //PORT INPUT
                     Expanded(
                       child: SizedBox(
                         width: 250, // Set the width
