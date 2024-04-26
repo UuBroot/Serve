@@ -2,6 +2,7 @@ import 'package:Serve/functions/podman.dart';
 import 'package:flutter/material.dart';
 
 import 'package:url_launcher/url_launcher.dart';
+import 'package:file_selector/file_selector.dart';
 
 import 'package:Serve/functions/folderManager.dart';
 
@@ -209,8 +210,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
                             ? null
                             : () {
                                 setState(() async {
-                                  final String? path =
-                                      "await getDirectoryPath()";
+                                  final String? path = await getDirectoryPath();
                                   if (path != null) {
                                     // Use the selected directory path
                                     _pathTextfieldController.text = path;
