@@ -52,6 +52,7 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  Timer? _timer;
   final StreamController<List<dynamic>> _streamController =
       StreamController<List<dynamic>>();
   @override
@@ -59,10 +60,19 @@ class _AppState extends State<App> {
     super.initState();
     // Initialize the stream with an empty list
     _streamController.add([]);
+
+    // Initializes the timer
+    _timer = Timer.periodic(
+      const Duration(milliseconds: 500),
+      (Timer t) {
+        _updateStream();
+      },
+    );
   }
 
   @override
   void dispose() {
+    _timer?.cancel();
     _streamController.close();
     super.dispose();
   }
