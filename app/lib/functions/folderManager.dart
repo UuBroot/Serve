@@ -65,26 +65,23 @@ void downloadJsonFiles(path) async {
  * Reads the json files from the modules folder.
  */
 
-Stream<List<Map<String, dynamic>>> readJsonFilesStream() async* {
-  await for (var _ in Stream.periodic(Duration(seconds: 1))) {
-    final folder = Directory('${getHomeDirectoryPath()}/Serve/modules');
+Future<List<Map<String, dynamic>>> readJsonFile() async {
+  final folder = Directory('${getHomeDirectoryPath()}/Serve/modules');
+  final List<Map<String, dynamic>> jsonList = [];
 
-    if (await folder.exists()) {
-      final files = folder.listSync();
-      final List<Map<String, dynamic>> jsonList = [];
+  if (await folder.exists()) {
+    final files = folder.listSync();
 
-      for (var file in files) {
-        if (file is File && file.path.endsWith('.json')) {
-          final String data = await file.readAsString();
-          final Map<String, dynamic> jsonData = json.decode(data);
-          jsonList.add(jsonData);
-        }
+    for (var file in files) {
+      if (file is File && file.path.endsWith('.json')) {
+        final String data = await file.readAsString();
+        final Map<String, dynamic> jsonData = json.decode(data);
+        jsonList.add(jsonData);
       }
-      print(jsonList);
-
-      yield jsonList;
-    } else {
-      print('Folder does not exist');
     }
+  } else {
+    print('Folder does not exist');
   }
+  print(jsonList);
+  return jsonList;
 }
