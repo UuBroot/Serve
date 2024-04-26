@@ -37,6 +37,7 @@ dependencies:
   http: ^1.2.1
   url_launcher: ^6.2.6
   file_selector: ^1.0.3
+  process_run: ^0.14.2
 
 dev_dependencies:
   flutter_test:

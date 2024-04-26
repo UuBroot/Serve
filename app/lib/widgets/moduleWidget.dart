@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:process_run/shell.dart';
 
 import 'package:Serve/functions/folderManager.dart';
 
@@ -44,6 +45,93 @@ class _ModuleWidgetState extends State<ModuleWidget> {
       TextEditingController(); //Text controller for the port input field
 
   bool firstRun = true;
+
+  /**
+   * Creates the container.
+   */
+  void create() async {
+    if (_pathTextfieldController.text.isNotEmpty &&
+            _portTextfieldController.text.isNotEmpty ||
+        widget.usesPath == false) {
+      var shell = Shell();
+
+      try {
+        var results = await shell
+            .run(makeCreateContainerCommand()); //Trys to run create command
+
+        for (var result in results) {
+          // Check if the command was successful
+          if (result.exitCode == 0) {
+            if (widget.exec.isNotEmpty) {
+              //command();
+            }
+
+            //start(); //starts the container after creation
+          } else {
+            print("Command error: ${result.stderr}");
+          }
+        }
+      } catch (e) {
+        print(e);
+      }
+    } else {
+      print("no path");
+      //showError(context, "No path was given");
+    }
+  }
+
+  /**
+   * Builds the command needed to create the container.
+   */
+  String makeCreateContainerCommand() {
+    List<String> command = ['podman', 'create', '--replace'];
+
+    //network
+    command.add('--network');
+    command.add('serve');
+
+    //path
+    if (widget.usesPath) {
+      command.add('-v');
+      command.add('${_pathTextfieldController.text}:${widget.internalPath}');
+    }
+
+    //name
+    command.add('--name');
+    command.add('serve-${widget.name}');
+
+    //port
+    print("port:" + widget.port);
+    if (widget.port != "" && widget.port != "0") {
+      command.add('--publish');
+      command.add(_portTextfieldController.text +
+          ":" +
+          widget.port.split(':')[1].toString());
+    }
+
+    //xargs
+    String xargs = widget.xargs;
+    if (widget.xargs.contains('|') || widget.xargs.contains(';')) {
+      //Check if user doesn't parse other commands
+      xargs =
+          ""; //TODO: somehow salvage the arguments without parsing other commands
+    } else {
+      command.add(xargs);
+    }
+
+    //image
+    command.add(widget.image);
+
+    //builds the string from the list
+    String commandString = "";
+    for (int i = 0; i < command.length; i++) {
+      commandString += command[i].toString();
+      commandString += " ";
+    }
+
+    print(commandString);
+    return commandString;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -166,8 +254,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
                                 setState(() {
                                   switch (state) {
                                     case 0:
-                                      //create();
-                                      break;
+                                      create();
                                     case 1:
                                       print("still creating");
                                       break;
