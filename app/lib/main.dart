@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:Serve/functions/podman.dart'; //Contains all function related to podman
@@ -50,6 +52,26 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  final StreamController<List<dynamic>> _streamController =
+      StreamController<List<dynamic>>();
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the stream with an empty list
+    _streamController.add([]);
+  }
+
+  @override
+  void dispose() {
+    _streamController.close();
+    super.dispose();
+  }
+
+  void _updateStream() async {
+    List<dynamic> newData = await readJsonFile();
+    _streamController.add(newData);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -66,7 +88,11 @@ class _AppState extends State<App> {
                         onPressed: () async {
                           await initFolder();
                         },
-                        child: const Text("Update Modules"))
+                        child: const Text("Update Modules")),
+                    ElevatedButton(
+                      onPressed: _updateStream,
+                      child: Icon(Icons.update),
+                    ),
                   ],
                 )
               ],
