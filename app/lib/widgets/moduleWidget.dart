@@ -227,7 +227,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
         future: getPodmanContainerStatus(widget.name),
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasError) {
-            //throwError(context, "wip error");
+            //showError(context, "wip error");
           } else if (snapshot.hasData) {
             final state = snapshot.data;
 
