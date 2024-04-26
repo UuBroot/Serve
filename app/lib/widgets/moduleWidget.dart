@@ -5,9 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:process_run/shell.dart';
 
-import 'package:Serve/functions/folderManager.dart';
-
-//int state = 0; //0 nonExisting | 1 creating | 2 stopped | 3 starting | 4 running | 5 stopping | 6 deleting
+//int state = 0;
 
 class ModuleWidget extends StatefulWidget {
   //Initialises all the variables that are given by main.dart
@@ -235,7 +233,8 @@ class _ModuleWidgetState extends State<ModuleWidget> {
             .changablePort; //if the port can be changed in the ui or not //after the button text switch case, because of the inputDisabled variable
 
     return FutureBuilder(
-        future: getPodmanContainerStatus(widget.name),
+        future: getPodmanContainerStatus(widget
+            .name), //0 nonExisting | 1 creating | 2 stopped | 3 starting | 4 running | 5 stopping | 6 deleting
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasError) {
             //showError(context, "wip error");
