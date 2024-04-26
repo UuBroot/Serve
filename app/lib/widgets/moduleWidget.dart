@@ -1,8 +1,12 @@
+import 'package:Serve/functions/podman.dart';
 import 'package:flutter/material.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:Serve/functions/folderManager.dart';
+
+int state =
+    0; //0 nonExisting | 1 creating | 2 stopped | 3 starting | 4 running | 5 stopping | 6 deleting
 
 class ModuleWidget extends StatefulWidget {
   //Initialises all the variables that are given by main.dart
@@ -34,23 +38,55 @@ class ModuleWidget extends StatefulWidget {
 }
 
 class _ModuleWidgetState extends State<ModuleWidget> {
+  /**
+   * Updates the container status and the button variable.
+   */
+  void updateState(name) async {
+    state = await getPodmanContainerStatus(name);
+  }
+
   final TextEditingController _pathTextfieldController =
       TextEditingController(); //Text controller for the potential input field
   final TextEditingController _portTextfieldController =
       TextEditingController(); //Text controller for the port input field
 
   bool firstRun = true;
-  int isStarted =
-      0; //0 nonExisting | 1 creating | 2 stopped | 3 starting | 4 running | 5 stopping | 6 deleting
 
   @override
   Widget build(BuildContext context) {
+    updateState(widget.name); //updates the state variable
+
     _portTextfieldController.text = widget.port.split(':')[0].toString();
+
     //writePortToConfig("php", "234");
     bool inputDisabled = false;
     bool changablePort = !inputDisabled &&
         widget
             .changablePort; //if the port can be changed in the ui or not //after the button text switch case, because of the inputDisabled variable
+
+    String buttonText = "";
+    switch (state) {
+      case 0:
+        buttonText = "Create";
+
+      case 1:
+        buttonText = "Creating ...";
+
+      case 2:
+        buttonText = "Start";
+
+      case 3:
+        buttonText = "Starting ...";
+
+      case 4:
+        buttonText = "Stop";
+
+      case 5:
+        buttonText = "Stopping";
+
+      case 6:
+        buttonText = "Resetting ...";
+    }
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -126,7 +162,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          switch (isStarted) {
+                          switch (state) {
                             case 0:
                               //create();
                               break;
@@ -151,7 +187,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
                           }
                         });
                       },
-                      child: Text("buttonText"),
+                      child: Text(buttonText),
                     ),
                   ],
                 ),
