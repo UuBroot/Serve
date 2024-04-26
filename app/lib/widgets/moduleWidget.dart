@@ -213,6 +213,17 @@ class _ModuleWidgetState extends State<ModuleWidget> {
    * Stops the podman container
    */
 
+  void stop() async {
+    var shell = Shell();
+
+    try {
+      shell.run(
+          'podman stop serve-${widget.name}'); //tries to stop the container
+    } catch (e) {
+      print("Error running command: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     _portTextfieldController.text = widget.port.split(':')[0].toString();
@@ -343,14 +354,11 @@ class _ModuleWidgetState extends State<ModuleWidget> {
                                       print("still starting");
                                       break;
                                     case 4:
-                                      //stop();
-                                      break;
+                                      stop();
                                     case 5:
                                       print("still stopping");
-                                      break;
                                     case 6:
                                       print("still resetting");
-                                      break;
                                   }
                                 });
                               },
