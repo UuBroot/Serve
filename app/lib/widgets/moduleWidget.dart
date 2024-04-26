@@ -66,7 +66,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
               //command();
             }
 
-            //start(); //starts the container after creation
+            start(); //starts the container after creation
           } else {
             print("Command error: ${result.stderr}");
           }
@@ -194,6 +194,25 @@ class _ModuleWidgetState extends State<ModuleWidget> {
     return Future.value(result);
   }
 
+  /**
+   * Starts the podman container.
+   */
+  void start() async {
+    var shell = Shell();
+    // Run the command
+    try {
+      shell.run(
+          'podman start serve-${widget.name}'); //tries to start the container
+    } catch (e) {
+      //showError(context,"Could not stop container. Check if the port is in use, or run the programm using the terminal to check for errors.");
+      print("Command error: ${e}");
+    }
+  }
+
+  /**
+   * Stops the podman container
+   */
+
   @override
   Widget build(BuildContext context) {
     _portTextfieldController.text = widget.port.split(':')[0].toString();
@@ -318,10 +337,8 @@ class _ModuleWidgetState extends State<ModuleWidget> {
                                       create();
                                     case 1:
                                       print("still creating");
-                                      break;
                                     case 2:
-                                      //start();
-                                      break;
+                                      start();
                                     case 3:
                                       print("still starting");
                                       break;
