@@ -77,8 +77,16 @@ class _AppState extends State<App> {
     super.dispose();
   }
 
+  int halfSecondsTillJsonFileRead = 7;
+  List<dynamic> cachedJsonFile = [];
   void _updateStream() async {
-    List<dynamic> newData = await readJsonFile();
+    if (halfSecondsTillJsonFileRead <= 0) {
+      halfSecondsTillJsonFileRead--;
+    } else {
+      cachedJsonFile = await readJsonFile();
+      halfSecondsTillJsonFileRead = 7;
+    }
+    List<dynamic> newData = cachedJsonFile;
     _streamController.add(newData);
   }
 
