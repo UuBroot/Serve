@@ -5,8 +5,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:process_run/shell.dart';
 
-//int state = 0;
-
 class ModuleWidget extends StatefulWidget {
   //Initialises all the variables that are given by main.dart
   final String name;
