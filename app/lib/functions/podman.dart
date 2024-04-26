@@ -59,7 +59,6 @@ Future<int> getPodmanContainerStatus(name) async {
       lineName = line.split(" ")[0].substring(1);
       if (lineName.toString() == "serve-${name}".toString()) {
         //checks if the container is in the list
-        print(line);
         String status = line.split(' ')[1]; //gets the status of the container
         switch (status) {
           case "Up":
