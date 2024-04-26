@@ -98,7 +98,7 @@ class _AppState extends State<App> {
               ],
             ),
             body: StreamBuilder(
-                stream: readJsonFilesStream(),
+                stream: _streamController.stream,
                 builder: (BuildContext context,
                     AsyncSnapshot<List<dynamic>> snapshot) {
                   if (snapshot.hasData) {
