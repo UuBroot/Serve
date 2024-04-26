@@ -133,6 +133,67 @@ class _ModuleWidgetState extends State<ModuleWidget> {
     return commandString;
   }
 
+  /**
+   * Resets/Removes a container.
+   */
+  void reset() async {
+    bool confirm =
+        await showResetConfirmation(context); //opens a confirmation dialog
+
+    if (confirm) {
+      var shell = Shell();
+
+      try {
+        var results = await shell.run(
+            'podman rm -f serve-${widget.name}'); //tries to reset/delete the container
+
+        for (var result in results) {
+          if (result.exitCode == 0) {
+            print("Command output: ${result.stdout}");
+          } else {
+            print("Command error: ${result.stderr}");
+          }
+        }
+
+        if (widget.usesPath) {
+          //if the container uses a path, it gets reset
+          _pathTextfieldController.text = "";
+        }
+      } catch (e) {
+        print(e);
+      }
+    } else {
+      print("won't reset");
+    }
+  }
+
+  /**
+   * Popup asking the user if they really want to delete the container.
+   */
+  Future<bool> showResetConfirmation(BuildContext context) async {
+    final bool? result = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Reset'),
+          content: Text('Are you sure you want to reset this container?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    return Future.value(result);
+  }
+
   @override
   Widget build(BuildContext context) {
     _portTextfieldController.text = widget.port.split(':')[0].toString();
@@ -217,7 +278,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
                                 //RESET BUTTON
                                 ElevatedButton(
                                     onPressed: () {
-                                      //reset();
+                                      reset();
                                     },
                                     child: const Text("Reset")),
                               ],
