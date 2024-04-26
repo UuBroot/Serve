@@ -241,7 +241,6 @@ class _ModuleWidgetState extends State<ModuleWidget> {
             //showError(context, "wip error");
           } else if (snapshot.hasData) {
             final state = snapshot.data;
-
             String buttonText = "";
 
             switch (state) {
@@ -261,7 +260,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
                 buttonText = "Stop";
 
               case 5:
-                buttonText = "Stopping";
+                buttonText = "Stopping ...";
 
               case 6:
                 buttonText = "Resetting ...";
