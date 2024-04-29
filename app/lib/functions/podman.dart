@@ -70,7 +70,7 @@ Future<int> getPodmanContainerStatus(name) async {
           case "Created\"":
             return 2;
 
-          case "Stopping":
+          case "Stopping\"":
             return 5;
 
           case "Exited":
