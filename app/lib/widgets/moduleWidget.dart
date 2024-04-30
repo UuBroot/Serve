@@ -229,10 +229,6 @@ class _ModuleWidgetState extends State<ModuleWidget> {
     _portTextfieldController.text = widget.port.split(':')[0].toString();
 
     //writePortToConfig("php", "234");
-    bool inputDisabled = false;
-    bool changablePort = !inputDisabled &&
-        widget
-            .changablePort; //if the port can be changed in the ui or not //after the button text switch case, because of the inputDisabled variable
 
     //write the path into the pathfield when empty
     updatePathFromContainer();
@@ -246,6 +242,10 @@ class _ModuleWidgetState extends State<ModuleWidget> {
           } else if (snapshot.hasData) {
             final state = snapshot.data;
             String buttonText = "";
+            bool inputDisabled = state != 0;
+            bool changablePort = !inputDisabled &&
+                widget
+                    .changablePort; //if the port can be changed in the ui or not //after the button text switch case, because of the inputDisabled variable
 
             switch (state) {
               case 0:
