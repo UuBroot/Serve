@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+
+import 'package:process_run/shell.dart';
 
 /**
  * Checks if podman is installed
@@ -82,4 +85,32 @@ Future<int> getPodmanContainerStatus(name) async {
     }
   }
   return 0; //no container is found in the list
+}
+
+/**
+ * Gets the container volume path of a given container.
+ */
+Future<String> getContainerVolumePath(String containerName) async {
+  print(containerName);
+  // Execute the Podman command to inspect the container
+  ProcessResult result =
+      await Process.run('podman', ['container', 'inspect', containerName]);
+  print(containerName);
+  // Check if the command was successful
+  if (result.exitCode == 0) {
+    // Parse the JSON output
+    var jsonOutput = jsonDecode(result.stdout as String);
+    var mounts = jsonOutput[0]['Mounts'];
+
+    // Assuming you want the first volume's source path
+    if (mounts.isNotEmpty) {
+      return mounts[0]['Source'];
+    } else {
+      print("nomounts");
+      return "";
+    }
+  } else {
+    print("error");
+    return "";
+  }
 }

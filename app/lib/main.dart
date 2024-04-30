@@ -132,7 +132,6 @@ class _AppState extends State<App> {
                             port: data['port'],
                             usesPath: data['usesPath'],
                             internalPath: data['internalPath'],
-                            externalPath: "", //volumePaths[i]
                             xargs: data['xargs'],
                             exec: data['exec'],
                             changablePort: data['changablePort']);

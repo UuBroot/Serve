@@ -12,7 +12,6 @@ class ModuleWidget extends StatefulWidget {
   final String port;
   final bool usesPath;
   final String internalPath;
-  final String externalPath;
   final String xargs;
   final String exec;
   final bool changablePort;
@@ -25,7 +24,6 @@ class ModuleWidget extends StatefulWidget {
       required this.port,
       required this.usesPath,
       required this.internalPath,
-      required this.externalPath,
       required this.xargs,
       required this.exec,
       required this.changablePort});
@@ -125,7 +123,6 @@ class _ModuleWidgetState extends State<ModuleWidget> {
       commandString += " ";
     }
 
-    print(commandString);
     return commandString;
   }
 
@@ -220,6 +217,13 @@ class _ModuleWidgetState extends State<ModuleWidget> {
     }
   }
 
+  void updatePathFromContainer() async {
+    if (_pathTextfieldController.text == "") {
+      _pathTextfieldController.text =
+          await getContainerVolumePath("serve-${widget.name}");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     _portTextfieldController.text = widget.port.split(':')[0].toString();
@@ -229,6 +233,9 @@ class _ModuleWidgetState extends State<ModuleWidget> {
     bool changablePort = !inputDisabled &&
         widget
             .changablePort; //if the port can be changed in the ui or not //after the button text switch case, because of the inputDisabled variable
+
+    //write the path into the pathfield when empty
+    updatePathFromContainer();
 
     return FutureBuilder(
         future: getPodmanContainerStatus(widget
