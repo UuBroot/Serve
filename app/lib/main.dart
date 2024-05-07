@@ -1,11 +1,10 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-
 import 'package:Serve/functions/podman.dart'; //Contains all function related to podman
 import 'package:Serve/functions/folderManager.dart'; //Contains all function related to managing the Serve folder
-
+import 'package:Serve/functions/launchUrl.dart';
 import 'package:Serve/widgets/moduleWidget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 List modules = []; //The data of the modules
 void main() async {
@@ -25,14 +24,24 @@ class PodmanNotInstalled extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       home: Scaffold(
-        body: Center(
-          child: Text(
-            'Podman is not installed on your system. Please install it to proceed.',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 40),
-          ),
+        body: Column(
+          children: [
+            const Center(
+              child: Text(
+                'Podman is not installed on your system. Please install it to proceed.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 40),
+              ),
+            ),
+            Center(
+              child: InkWell(
+                child: Text("https://podman.io/docs/installation"),
+                onTap: () => launchURL("https://podman.io/docs/installation"),
+              ),
+            )
+          ],
         ),
       ),
     );
