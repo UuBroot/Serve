@@ -36,7 +36,7 @@ class PodmanNotInstalled extends StatelessWidget {
             ),
             Center(
               child: InkWell(
-                child: Text("https://podman.io/docs/installation"),
+                child: const Text("https://podman.io/docs/installation"),
                 onTap: () => launchURL("https://podman.io/docs/installation"),
               ),
             )
