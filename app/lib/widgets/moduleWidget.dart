@@ -1,4 +1,5 @@
 import 'package:Serve/functions/podman.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -40,9 +41,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
 
   bool firstRun = true;
 
-  /**
-   * Creates the container.
-   */
+  /// Creates the container.
   void create() async {
     if (_pathTextfieldController.text.isNotEmpty &&
             _portTextfieldController.text.isNotEmpty ||
@@ -62,7 +61,9 @@ class _ModuleWidgetState extends State<ModuleWidget> {
 
             start(); //starts the container after creation
           } else {
-            print("Command error: ${result.stderr}");
+            if (kDebugMode) {
+              print("Command error: ${result.stderr}");
+            }
           }
         }
       } catch (e) {
@@ -74,9 +75,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
     }
   }
 
-  /**
-   * Builds the command needed to create the container.
-   */
+  /// Builds the command needed to create the container.
   String makeCreateContainerCommand() {
     List<String> command = ['podman', 'create', '--replace'];
 
@@ -95,12 +94,10 @@ class _ModuleWidgetState extends State<ModuleWidget> {
     command.add('serve-${widget.name}');
 
     //port
-    print("port:" + widget.port);
     if (widget.port != "" && widget.port != "0") {
       command.add('--publish');
-      command.add(_portTextfieldController.text +
-          ":" +
-          widget.port.split(':')[1].toString());
+      command
+          .add("${_portTextfieldController.text}:${widget.port.split(':')[1]}");
     }
 
     //xargs
@@ -126,9 +123,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
     return commandString;
   }
 
-  /**
-   * Resets/Removes a container.
-   */
+  /// Resets/Removes a container.
   void reset() async {
     bool confirm =
         await showResetConfirmation(context); //opens a confirmation dialog
@@ -141,10 +136,10 @@ class _ModuleWidgetState extends State<ModuleWidget> {
             'podman rm -f serve-${widget.name}'); //tries to reset/delete the container
 
         for (var result in results) {
-          if (result.exitCode == 0) {
-            print("Command output: ${result.stdout}");
-          } else {
-            print("Command error: ${result.stderr}");
+          if (result.exitCode != 0) {
+            if (kDebugMode) {
+              print("Command error: ${result.stderr}");
+            }
           }
         }
 
@@ -153,31 +148,33 @@ class _ModuleWidgetState extends State<ModuleWidget> {
           _pathTextfieldController.text = "";
         }
       } catch (e) {
-        print(e);
+        if (kDebugMode) {
+          print(e);
+        }
       }
     } else {
-      print("won't reset");
+      if (kDebugMode) {
+        print("won't reset");
+      }
     }
   }
 
-  /**
-   * Popup asking the user if they really want to delete the container.
-   */
+  /// Popup asking the user if they really want to delete the container.
   Future<bool> showResetConfirmation(BuildContext context) async {
     final bool? result = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm Reset'),
-          content: Text('Are you sure you want to reset this container?'),
+          title: const Text('Confirm Reset'),
+          content: const Text('Are you sure you want to reset this container?'),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: Text('Delete'),
+              child: const Text('Delete'),
             ),
           ],
         );
@@ -187,9 +184,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
     return Future.value(result);
   }
 
-  /**
-   * Starts the podman container.
-   */
+  /// Starts the podman container.
   void start() async {
     var shell = Shell();
     // Run the command
@@ -198,13 +193,13 @@ class _ModuleWidgetState extends State<ModuleWidget> {
           'podman start serve-${widget.name}'); //tries to start the container
     } catch (e) {
       //showError(context,"Could not stop container. Check if the port is in use, or run the programm using the terminal to check for errors.");
-      print("Command error: ${e}");
+      if (kDebugMode) {
+        print("Command error: ${e}");
+      }
     }
   }
 
-  /**
-   * Stops the podman container
-   */
+  /// Stops the podman container
 
   void stop() async {
     var shell = Shell();
@@ -213,7 +208,9 @@ class _ModuleWidgetState extends State<ModuleWidget> {
       shell.run(
           'podman stop serve-${widget.name}'); //tries to stop the container
     } catch (e) {
-      print("Error running command: $e");
+      if (kDebugMode) {
+        print("Error running command: $e");
+      }
     }
   }
 
@@ -227,8 +224,6 @@ class _ModuleWidgetState extends State<ModuleWidget> {
   @override
   Widget build(BuildContext context) {
     _portTextfieldController.text = widget.port.split(':')[0].toString();
-
-    //writePortToConfig("php", "234");
 
     //write the path into the pathfield when empty
     updatePathFromContainer();
@@ -304,7 +299,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
                                           launchURL(
                                               "http://localhost:${_portTextfieldController.text}");
                                         },
-                                        child: Text("Open in browser")),
+                                        child: const Text("Open in browser")),
                                   ],
                                 ),
                                 const SizedBox(width: 10),
@@ -337,7 +332,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
                                   controller: _portTextfieldController,
                                   readOnly:
                                       true, //TODO: use !changablePort and keep settings
-                                  style: TextStyle(fontSize: 20),
+                                  style: const TextStyle(fontSize: 20),
                                   maxLines:
                                       1, // Ensure it's a single line TextField
                                 ),
@@ -350,19 +345,10 @@ class _ModuleWidgetState extends State<ModuleWidget> {
                                   switch (state) {
                                     case 0:
                                       create();
-                                    case 1:
-                                      print("still creating");
                                     case 2:
                                       start();
-                                    case 3:
-                                      print("still starting");
-                                      break;
                                     case 4:
                                       stop();
-                                    case 5:
-                                      print("still stopping");
-                                    case 6:
-                                      print("still resetting");
                                   }
                                 });
                               },
@@ -396,7 +382,9 @@ class _ModuleWidgetState extends State<ModuleWidget> {
                                                 path;
                                           } else {
                                             // User canceled the picker
-                                            print('User canceled the picker');
+                                            if (kDebugMode) {
+                                              print('User canceled the picker');
+                                            }
                                           }
                                         });
                                       },
@@ -437,16 +425,18 @@ class _ModuleWidgetState extends State<ModuleWidget> {
               ),
             );
           } else {
-            print("wip err");
+            if (kDebugMode) {
+              print("wip err");
+            }
           }
           return Padding(
               padding: const EdgeInsets.all(8.0),
               child: SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  child: Card(
+                  child: const Card(
                       elevation: 5,
                       child: Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: EdgeInsets.all(16.0),
                         child: Center(
                           child: CircularProgressIndicator(
                             color: Colors.deepPurpleAccent,
@@ -456,9 +446,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
         });
   }
 
-/**
- * Launches the url in the browser
- */
+  /// Launches the url in the browser
   Future<void> launchURL(String url) async {
     //TODO:find alternative to depricated feature
     // ignore: deprecated_member_use
