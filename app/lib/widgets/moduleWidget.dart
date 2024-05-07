@@ -1,7 +1,7 @@
 import 'package:Serve/functions/podman.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
+import 'package:Serve/functions/throwError.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:process_run/shell.dart';
@@ -61,17 +61,23 @@ class _ModuleWidgetState extends State<ModuleWidget> {
 
             start(); //starts the container after creation
           } else {
+            showError(context, "Could not start container: ${result.stderr}");
             if (kDebugMode) {
               print("Command error: ${result.stderr}");
             }
           }
         }
       } catch (e) {
-        print(e);
+        showError(context, "Could not create container: $e");
+        if (kDebugMode) {
+          print(e);
+        }
       }
     } else {
-      print("no path");
-      //showError(context, "No path was given");
+      if (kDebugMode) {
+        print("no path");
+      }
+      showError(context, "No path was given");
     }
   }
 
@@ -148,6 +154,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
           _pathTextfieldController.text = "";
         }
       } catch (e) {
+        showError(context, "Could not reset container: $e");
         if (kDebugMode) {
           print(e);
         }
@@ -192,9 +199,10 @@ class _ModuleWidgetState extends State<ModuleWidget> {
       shell.run(
           'podman start serve-${widget.name}'); //tries to start the container
     } catch (e) {
-      //showError(context,"Could not stop container. Check if the port is in use, or run the programm using the terminal to check for errors.");
+      showError(
+          context, "Could not stop container. Check if the port is in use.");
       if (kDebugMode) {
-        print("Command error: ${e}");
+        print("Command error: $e");
       }
     }
   }
@@ -208,6 +216,7 @@ class _ModuleWidgetState extends State<ModuleWidget> {
       shell.run(
           'podman stop serve-${widget.name}'); //tries to stop the container
     } catch (e) {
+      showError(context, "Could not stop container: $e");
       if (kDebugMode) {
         print("Error running command: $e");
       }
@@ -233,7 +242,8 @@ class _ModuleWidgetState extends State<ModuleWidget> {
             .name), //0 nonExisting | 1 creating | 2 stopped | 3 starting | 4 running | 5 stopping | 6 deleting
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasError) {
-            //showError(context, "wip error");
+            showError(context,
+                "Could not load widgets. If this error persists delete the \"Serve\" folder in your home directory.");
           } else if (snapshot.hasData) {
             final state = snapshot.data;
             String buttonText = "";
@@ -425,8 +435,10 @@ class _ModuleWidgetState extends State<ModuleWidget> {
               ),
             );
           } else {
+            showError(context,
+                "Could not load widgets. If this error persists delete the \"Serve\" folder in your home directory.");
             if (kDebugMode) {
-              print("wip err");
+              print("load err");
             }
           }
           return Padding(
