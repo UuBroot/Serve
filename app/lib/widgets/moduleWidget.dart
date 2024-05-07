@@ -435,8 +435,6 @@ class _ModuleWidgetState extends State<ModuleWidget> {
               ),
             );
           } else {
-            showError(context,
-                "Could not load widgets. If this error persists delete the \"Serve\" folder in your home directory.");
             if (kDebugMode) {
               print("load err");
             }
