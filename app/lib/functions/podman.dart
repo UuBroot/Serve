@@ -2,11 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:process_run/shell.dart';
+import 'package:flutter/foundation.dart';
 
-/**
- * Checks if podman is installed
- */
+/// Checks if podman is installed
 Future<bool> isPodmanInstalled() async {
   try {
     final result = await Process.run('which', ['podman']);
@@ -16,22 +14,20 @@ Future<bool> isPodmanInstalled() async {
   }
 }
 
-/**
- * checks if the podman nextwork exists and creates it if it doesn't.
- */
+/// checks if the podman nextwork exists and creates it if it doesn't.
 Future<void> initNetwork() async {
   bool exists = await checkPodmanNetworkExists();
 
   if (!exists) {
     await Process.start('podman', ['network', 'create', 'serve']);
   } else {
-    print("network allready exists");
+    if (kDebugMode) {
+      print("network allready exists");
+    }
   }
 }
 
-/**
- * Checks the existents of a podman network.
- */
+/// Checks the existents of a podman network.
 Future<bool> checkPodmanNetworkExists() async {
   try {
     final process =
@@ -39,14 +35,14 @@ Future<bool> checkPodmanNetworkExists() async {
 
     return process.exitCode == 0;
   } catch (e) {
-    print('Error checking network: $e');
+    if (kDebugMode) {
+      print('Error checking network: $e');
+    }
     return false;
   }
 }
 
-/**
- * Gets the status of a podman container.
- */
+/// Gets the status of a podman container.
 
 Future<int> getPodmanContainerStatus(name) async {
   final result = await Process.run(
@@ -81,15 +77,15 @@ Future<int> getPodmanContainerStatus(name) async {
         }
       }
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
   return 0; //no container is found in the list
 }
 
-/**
- * Gets the container volume path of a given container.
- */
+/// Gets the container volume path of a given container.
 Future<String> getContainerVolumePath(String containerName) async {
   print(containerName);
   // Execute the Podman command to inspect the container
@@ -110,7 +106,6 @@ Future<String> getContainerVolumePath(String containerName) async {
       return "";
     }
   } else {
-    print("error");
     return "";
   }
 }
