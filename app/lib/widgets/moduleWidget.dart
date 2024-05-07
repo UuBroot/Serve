@@ -335,7 +335,8 @@ class _ModuleWidgetState extends State<ModuleWidget> {
                                     ),
                                   ),
                                   controller: _portTextfieldController,
-                                  readOnly: !changablePort,
+                                  readOnly:
+                                      true, //TODO: use !changablePort and keep settings
                                   style: TextStyle(fontSize: 20),
                                   maxLines:
                                       1, // Ensure it's a single line TextField
