@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 
 /// Checks if podman is installed
@@ -87,11 +86,9 @@ Future<int> getPodmanContainerStatus(name) async {
 
 /// Gets the container volume path of a given container.
 Future<String> getContainerVolumePath(String containerName) async {
-  print(containerName);
   // Execute the Podman command to inspect the container
   ProcessResult result =
       await Process.run('podman', ['container', 'inspect', containerName]);
-  print(containerName);
   // Check if the command was successful
   if (result.exitCode == 0) {
     // Parse the JSON output
@@ -102,7 +99,9 @@ Future<String> getContainerVolumePath(String containerName) async {
     if (mounts.isNotEmpty) {
       return mounts[0]['Source'];
     } else {
-      print("nomounts");
+      if (kDebugMode) {
+        print("nomounts");
+      }
       return "";
     }
   } else {
