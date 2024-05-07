@@ -19,9 +19,7 @@ void main() async {
   }
 }
 
-/**
- * The widget the gets placed in the main scene when no podman is installed.
- */
+/// The widget the gets placed in the main scene when no podman is installed.
 class PodmanNotInstalled extends StatelessWidget {
   const PodmanNotInstalled({super.key});
 
@@ -41,9 +39,7 @@ class PodmanNotInstalled extends StatelessWidget {
   }
 }
 
-/**
- * The main app widget that contains all the module widgets.
- */
+/// The main app widget that contains all the module widgets.
 class App extends StatefulWidget {
   const App({super.key});
 
@@ -109,7 +105,7 @@ class _AppState extends State<App> {
                         child: const Text("Update Modules")),
                     ElevatedButton(
                       onPressed: _updateStream,
-                      child: Icon(Icons.update),
+                      child: const Icon(Icons.update),
                     ),
                   ],
                 )
@@ -138,7 +134,7 @@ class _AppState extends State<App> {
                       },
                     );
                   } else {
-                    return Text("No modules");
+                    return const Text("No modules");
                   }
                 })));
   }
