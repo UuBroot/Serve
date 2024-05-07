@@ -2,9 +2,9 @@ import 'package:Serve/functions/podman.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:Serve/functions/throwError.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:process_run/shell.dart';
+import 'package:Serve/functions/launchUrl.dart';
 
 class ModuleWidget extends StatefulWidget {
   //Initialises all the variables that are given by main.dart
@@ -454,17 +454,5 @@ class _ModuleWidgetState extends State<ModuleWidget> {
                         ),
                       ))));
         });
-  }
-
-  /// Launches the url in the browser
-  Future<void> launchURL(String url) async {
-    //TODO:find alternative to depricated feature
-    // ignore: deprecated_member_use
-    if (await canLaunch(url)) {
-      // ignore: deprecated_member_use
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
   }
 }
