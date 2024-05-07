@@ -4,7 +4,6 @@ import 'package:Serve/functions/podman.dart'; //Contains all function related to
 import 'package:Serve/functions/folderManager.dart'; //Contains all function related to managing the Serve folder
 import 'package:Serve/functions/launchUrl.dart';
 import 'package:Serve/widgets/moduleWidget.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 List modules = []; //The data of the modules
 void main() async {
